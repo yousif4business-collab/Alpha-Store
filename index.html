@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpha Store | متجر الفا</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F0C96A;
+    --gold-dim: #7A6028;
+    --bg-deep: #080B12;
+    --bg-card: #0E1420;
+    --bg-surface: #131926;
+    --border: rgba(201,168,76,0.18);
+    --border-bright: rgba(201,168,76,0.45);
+    --text: #EAE6D8;
+    --text-muted: #8A8578;
+    --teal: #1DBDA0;
+    --pink: #E65F9A;
+    --blue: #3A8DFF;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg-deep); color:var(--text); font-family:'Outfit',sans-serif; overflow-x:hidden; }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(8,11,18,0.92); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 5vw; height:66px;
+  }
+  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-hex {
+    width:38px; height:38px; background:var(--gold);
+    clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .logo-hex span { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--bg-deep); }
+  .logo-en { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:2px; color:var(--gold); display:block; }
+  .logo-ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:.68rem; color:var(--text-muted); display:block; }
+  nav ul { display:flex; gap:1.6rem; list-style:none; align-items:center; }
+  nav ul a { color:var(--text-muted); text-decoration:none; font-size:.85rem; font-weight:500; transition:color .2s; }
+  nav ul a:hover { color:var(--gold); }
+  .nav-cta { background:var(--gold); color:var(--bg-deep) !important; padding:8px 18px; border-radius:6px; font-weight:700 !important; font-size:.82rem !important; }
+  .nav-cta:hover { background:var(--gold-light) !important; }
+
+  /* HERO */
+  .hero {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; text-align:center; padding:110px 5vw 70px;
+    position:relative; overflow:hidden;
+  }
+  .hero-grid {
+    position:absolute; inset:0; z-index:0;
+    background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);
+    background-size:60px 60px;
+  }
+  .hero-glow { position:absolute; top:18%; left:50%; transform:translateX(-50%); width:700px; height:320px; background:radial-gradient(ellipse,rgba(201,168,76,0.13) 0%,transparent 70%); z-index:0; }
+  .hero-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(201,168,76,0.1); border:1px solid var(--border-bright);
+    padding:7px 18px; border-radius:30px; font-size:.76rem; font-weight:600;
+    color:var(--gold-light); margin-bottom:28px;
+    position:relative; z-index:1; animation:fadeSlide .6s ease both;
+    font-family:'Noto Kufi Arabic',sans-serif; direction:rtl;
+  }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--teal); animation:pulse 2s infinite; flex-shrink:0; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  @keyframes fadeSlide { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:none} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+  .hero h1 {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(3.5rem,9vw,7.5rem);
+    line-height:1; letter-spacing:4px; color:var(--text);
+    position:relative; z-index:1; animation:fadeUp .7s .1s ease both;
+  }
+  .hero h1 span { color:var(--gold); }
+  .hero-ar {
+    font-family:'Noto Kufi Arabic',sans-serif; font-size:clamp(1.2rem,3vw,1.9rem); font-weight:700;
+    color:var(--text-muted); margin-top:8px;
+    position:relative; z-index:1; animation:fadeUp .7s .15s ease both; direction:rtl;
+  }
+  .hero-desc { max-width:580px; margin:22px auto 0; position:relative; z-index:1; animation:fadeUp .7s .2s ease both; }
+  .hero-desc p { color:var(--text-muted); font-size:.97rem; line-height:1.7; }
+  .hero-desc p.ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:.9rem; direction:rtl; margin-top:6px; }
+  .hero-btns {
+    display:flex; gap:14px; margin-top:34px; flex-wrap:wrap; justify-content:center;
+    position:relative; z-index:1; animation:fadeUp .7s .3s ease both;
+  }
+  .btn-primary {
+    background:var(--gold); color:var(--bg-deep);
+    padding:13px 30px; border-radius:8px; font-weight:700; font-size:1rem;
+    text-decoration:none; border:none; cursor:pointer;
+    transition:background .2s,transform .15s; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary:hover { background:var(--gold-light); transform:translateY(-2px); }
+  .btn-outline {
+    background:transparent; color:var(--text);
+    padding:13px 26px; border-radius:8px; font-weight:600; font-size:1rem;
+    text-decoration:none; border:1px solid var(--border-bright); cursor:pointer;
+    transition:border-color .2s,color .2s,transform .15s; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-outline:hover { border-color:var(--gold); color:var(--gold); transform:translateY(-2px); }
+  .hero-stats {
+    display:flex; gap:44px; margin-top:56px; flex-wrap:wrap; justify-content:center;
+    position:relative; z-index:1; animation:fadeUp .7s .4s ease both;
+  }
+  .stat { text-align:center; }
+  .stat-num { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; color:var(--gold); letter-spacing:1px; }
+  .stat-en { font-size:.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1.5px; }
+  .stat-ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:.68rem; color:var(--text-muted); margin-top:1px; }
+
+  /* MARQUEE */
+  .marquee-wrap { overflow:hidden; background:rgba(201,168,76,0.06); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:12px 0; }
+  .marquee { display:flex; gap:48px; animation:marquee 22s linear infinite; white-space:nowrap; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  .marquee span { font-size:.78rem; color:var(--gold-dim); font-weight:600; text-transform:uppercase; letter-spacing:2px; }
+  .marquee em { color:var(--gold); font-style:normal; margin-right:48px; }
+
+  /* SECTION */
+  section { padding:76px 5vw; }
+  .section-label { font-size:.7rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:3px; margin-bottom:6px; font-family:'Noto Kufi Arabic',sans-serif; direction:rtl; }
+  .section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2rem,5vw,3.2rem); letter-spacing:2px; line-height:1; color:var(--text); }
+  .section-title span { color:var(--gold); }
+  .section-subtitle { font-family:'Noto Kufi Arabic',sans-serif; font-size:clamp(1rem,2.5vw,1.35rem); font-weight:600; color:var(--text-muted); margin-top:3px; direction:rtl; }
+
+  /* CATEGORIES */
+  .categories-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:14px; margin-top:40px; }
+  .cat-card {
+    background:var(--bg-card); border:1px solid var(--border); border-radius:14px;
+    padding:26px 12px 20px; text-align:center; cursor:pointer;
+    transition:border-color .25s,transform .25s,box-shadow .25s;
+    text-decoration:none; color:inherit; display:block;
+  }
+  .cat-card:hover { border-color:var(--border-bright); transform:translateY(-5px); }
+  .cat-card.active { border-color:var(--gold); box-shadow:0 0 22px rgba(201,168,76,0.14); }
+  .cat-logo-wrap {
+    width:66px; height:66px; border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 14px; overflow:hidden; border:1px solid rgba(255,255,255,0.07);
+  }
+  .cat-logo-wrap img { width:100%; height:100%; object-fit:contain; }
+  .cat-name-en { font-weight:700; font-size:.9rem; color:var(--text); }
+  .cat-name-ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:.76rem; color:var(--text-muted); margin-top:3px; direction:rtl; }
+  .cat-count { font-size:.7rem; color:var(--gold-dim); margin-top:5px; }
+
+  /* FILTER TABS */
+  .products-header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:24px; }
+  .filter-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; }
+  .tab {
+    padding:7px 16px; border-radius:30px; font-size:.8rem; font-weight:600;
+    border:1px solid var(--border); color:var(--text-muted);
+    cursor:pointer; background:transparent; transition:all .2s;
+    display:flex; flex-direction:column; align-items:center; gap:1px; line-height:1.3;
+  }
+  .tab .ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:.7rem; }
+  .tab.active { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.1); }
+  .tab:hover:not(.active) { border-color:rgba(201,168,76,0.35); color:var(--text); }
+
+  /* PRODUCTS */
+  .products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(278px,1fr)); gap:18px; margin-top:18px; }
+  .product-card {
+    background:var(--bg-card); border:1px solid var(--border); border-radius:14px;
+    overflow:hidden; transition:border-color .2s,transform .2s; cursor:pointer;
+    position:relative; display:flex; flex-direction:column;
+  }
+  .product-card.hidden { display:none; }
+  .product-card:hover { border-color:var(--border-bright); transform:translateY(-5px); }
+  .product-badge {
+    position:absolute; top:12px; left:12px;
+    padding:4px 10px; border-radius:6px; font-size:.68rem; font-weight:700;
+    letter-spacing:1px; z-index:2; font-family:'Noto Kufi Arabic',sans-serif;
+  }
+  .badge-hot { background:rgba(230,95,154,0.2); color:var(--pink); border:1px solid rgba(230,95,154,0.3); }
+  .badge-new { background:rgba(29,189,160,0.15); color:var(--teal); border:1px solid rgba(29,189,160,0.3); }
+  .badge-sale { background:rgba(58,141,255,0.15); color:var(--blue); border:1px solid rgba(58,141,255,0.3); }
+  .product-img {
+    height:158px; display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .product-img::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 40%,var(--bg-card) 100%); }
+  .product-img img { position:relative; z-index:1; }
+  .product-body { padding:15px 17px 18px; flex:1; display:flex; flex-direction:column; }
+  .product-name-en { font-weight:700; font-size:.97rem; color:var(--text); }
+  .product-name-ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:.8rem; color:var(--text-muted); margin-top:2px; direction:rtl; }
+  .product-desc { font-family:'Noto Kufi Arabic',sans-serif; font-size:.78rem; color:var(--text-muted); margin-top:8px; line-height:1.6; flex:1; direction:rtl; }
+  .product-price-row { display:flex; align-items:center; justify-content:space-between; margin-top:14px; }
+  .product-price { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; color:var(--gold); letter-spacing:1px; line-height:1; }
+  .product-price small { font-family:'Noto Kufi Arabic',sans-serif; font-size:.7rem; color:var(--text-muted); font-weight:400; letter-spacing:0; }
+  .price-old { text-decoration:line-through; color:var(--text-muted); font-size:.75rem; display:block; font-family:'Noto Kufi Arabic',sans-serif; }
+  .btn-buy {
+    background:var(--gold); color:var(--bg-deep);
+    border:none; border-radius:7px; padding:9px 16px;
+    font-family:'Noto Kufi Arabic',sans-serif; font-size:.82rem; font-weight:700;
+    cursor:pointer; transition:background .2s; white-space:nowrap;
+    display:flex; flex-direction:column; align-items:center; gap:0;
+  }
+  .btn-buy .en { font-family:'Outfit',sans-serif; font-size:.68rem; font-weight:600; opacity:.7; }
+  .btn-buy:hover { background:var(--gold-light); }
+
+  /* HOW IT WORKS */
+  .steps-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin-top:48px; }
+  .step { padding:30px 22px; text-align:center; position:relative; }
+  .step:not(:last-child)::after { content:'→'; position:absolute; right:-10px; top:40%; color:var(--gold-dim); font-size:1.3rem; }
+  .step-num { font-family:'Bebas Neue',sans-serif; font-size:3.5rem; color:rgba(201,168,76,0.1); line-height:1; margin-bottom:-8px; }
+  .step-icon { width:56px; height:56px; border-radius:14px; background:rgba(201,168,76,0.08); border:1px solid var(--border-bright); display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin:0 auto 14px; }
+  .step-title-ar { font-family:'Noto Kufi Arabic',sans-serif; font-weight:700; font-size:.92rem; color:var(--text); direction:rtl; }
+  .step-title-en { font-size:.78rem; color:var(--text-muted); margin-top:2px; }
+  .step-desc-ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:.78rem; color:var(--text-muted); margin-top:8px; line-height:1.65; direction:rtl; }
+
+  /* CHANNELS */
+  .channels { display:flex; gap:16px; margin-top:40px; flex-wrap:wrap; }
+  .channel-card { flex:1; min-width:210px; background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:24px; transition:border-color .2s,transform .2s; }
+  .channel-card:hover { transform:translateY(-3px); }
+  .channel-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+  .channel-icon img { width:28px; height:28px; }
+  .ch-title-ar { font-family:'Noto Kufi Arabic',sans-serif; font-weight:700; font-size:1rem; direction:rtl; }
+  .ch-title-en { font-size:.78rem; color:var(--text-muted); margin-top:2px; }
+  .ch-desc { font-family:'Noto Kufi Arabic',sans-serif; font-size:.8rem; color:var(--text-muted); margin-top:8px; line-height:1.65; direction:rtl; }
+  .channel-link { display:inline-flex; align-items:center; gap:6px; margin-top:14px; font-size:.8rem; font-weight:700; color:var(--gold); text-decoration:none; font-family:'Noto Kufi Arabic',sans-serif; }
+  .channel-link:hover { color:var(--gold-light); }
+
+  /* REVIEWS */
+  .reviews-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:14px; margin-top:40px; }
+  .review-card { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:20px; }
+  .stars { color:var(--gold); font-size:.9rem; letter-spacing:2px; margin-bottom:10px; }
+  .review-text { font-family:'Noto Kufi Arabic',sans-serif; font-size:.86rem; color:var(--text); line-height:1.7; direction:rtl; }
+  .review-text.en { direction:ltr; font-family:'Outfit',sans-serif; }
+  .review-author { display:flex; align-items:center; gap:10px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); }
+  .avatar { width:34px; height:34px; border-radius:50%; background:rgba(201,168,76,0.12); border:1px solid var(--border-bright); display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; color:var(--gold); flex-shrink:0; font-family:'Noto Kufi Arabic',sans-serif; }
+  .author-name { font-weight:600; font-size:.84rem; font-family:'Noto Kufi Arabic',sans-serif; }
+  .author-sub { font-size:.7rem; color:var(--text-muted); margin-top:1px; }
+
+  /* CTA */
+  .cta-banner {
+    margin:0 5vw 76px; background:var(--bg-card);
+    border:1px solid var(--border-bright); border-radius:20px;
+    padding:52px 44px; display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:26px; position:relative; overflow:hidden;
+  }
+  .cta-glow { position:absolute; right:-40px; top:-40px; width:280px; height:280px; background:radial-gradient(circle,rgba(201,168,76,0.13) 0%,transparent 70%); }
+  .cta-text { position:relative; z-index:1; }
+  .cta-title-ar { font-family:'Noto Kufi Arabic',sans-serif; font-size:clamp(1.3rem,3.5vw,2rem); font-weight:700; direction:rtl; }
+  .cta-title-ar span { color:var(--gold); }
+  .cta-title-en { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.1rem,2.5vw,1.6rem); letter-spacing:2px; color:var(--text-muted); margin-top:4px; }
+  .cta-sub { font-family:'Noto Kufi Arabic',sans-serif; font-size:.86rem; color:var(--text-muted); margin-top:8px; max-width:380px; line-height:1.65; direction:rtl; }
+  .cta-actions { display:flex; gap:12px; flex-wrap:wrap; position:relative; z-index:1; }
+
+  /* FOOTER */
+  footer { background:var(--bg-card); border-top:1px solid var(--border); padding:44px 5vw 26px; }
+  .footer-grid { display:grid; grid-template-columns:2fr repeat(3,1fr); gap:34px; }
+  .footer-brand p { font-family:'Noto Kufi Arabic',sans-serif; font-size:.82rem; color:var(--text-muted); margin-top:12px; line-height:1.75; max-width:240px; direction:rtl; }
+  .footer-col h4 { font-family:'Noto Kufi Arabic',sans-serif; font-weight:700; font-size:.84rem; color:var(--text); margin-bottom:14px; direction:rtl; }
+  .footer-col h4 small { font-family:'Outfit',sans-serif; font-size:.7rem; color:var(--text-muted); display:block; font-weight:500; text-transform:uppercase; letter-spacing:1px; margin-top:2px; direction:ltr; }
+  .footer-col a { display:block; font-family:'Noto Kufi Arabic',sans-serif; font-size:.8rem; color:var(--text-muted); text-decoration:none; margin-bottom:9px; transition:color .2s; direction:rtl; }
+  .footer-col a:hover { color:var(--gold); }
+  .footer-bottom { border-top:1px solid var(--border); margin-top:34px; padding-top:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .footer-bottom p { font-size:.76rem; color:var(--text-muted); font-family:'Noto Kufi Arabic',sans-serif; direction:rtl; }
+  .social-links { display:flex; gap:10px; }
+  .social-links a { width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:border-color .2s; }
+  .social-links a:hover { border-color:var(--border-bright); }
+  .social-links img { width:18px; height:18px; object-fit:contain; }
+
+  @media(max-width:768px) { .footer-grid { grid-template-columns:1fr 1fr; } nav ul { display:none; } .step::after { display:none; } .cta-banner { padding:34px 20px; } }
+  @media(max-width:480px) { .footer-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-hex"><span>A</span></div>
+    <div>
+      <span class="logo-en">ALPHA STORE</span>
+      <span class="logo-ar">متجر الفا</span>
+    </div>
+  </a>
+  <ul>
+    <li><a href="#products">المنتجات</a></li>
+    <li><a href="#how">كيف يعمل</a></li>
+    <li><a href="#channels">تواصل معنا</a></li>
+    <li><a href="#buy" class="nav-cta">اشترك الآن</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><div class="dot"></div>رقم 1 في العراق للاشتراكات الرقمية — Iraq's #1 Digital Store</div>
+  <h1>ALPHA <span>STORE</span></h1>
+  <div class="hero-ar">متجر الفا — اشتراكات البرامج والمنصات</div>
+  <div class="hero-desc">
+    <p class="ar">وصول فوري لأفضل برامج الذكاء الاصطناعي والتصميم والإنتاجية بأرخص الأسعار في العراق — تفعيل خلال دقائق.</p>
+    <p>Instant access to premium AI, design & creative tools at Iraq's lowest prices — activated in minutes.</p>
+  </div>
+  <div class="hero-btns">
+    <a href="#products" class="btn-primary">🛍️ اشترك الآن</a>
+    <a href="#how" class="btn-outline">💬 كيف يعمل؟</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">1,062+</div><div class="stat-ar">زبون راضي</div><div class="stat-en">Happy Customers</div></div>
+    <div class="stat"><div class="stat-num">50+</div><div class="stat-ar">منتج متوفر</div><div class="stat-en">Products</div></div>
+    <div class="stat"><div class="stat-num">5 دقائق</div><div class="stat-ar">متوسط التفعيل</div><div class="stat-en">Avg Activation</div></div>
+    <div class="stat"><div class="stat-num">24/7</div><div class="stat-ar">دعم متواصل</div><div class="stat-en">Support</div></div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span><em>✦</em>ChatGPT Plus</span><span><em>✦</em>Gemini AI Pro</span><span><em>✦</em>Adobe Creative Cloud</span><span><em>✦</em>Perplexity Pro</span><span><em>✦</em>ElevenLabs</span><span><em>✦</em>Midjourney</span><span><em>✦</em>Canva Pro</span><span><em>✦</em>Microsoft 365</span><span><em>✦</em>Grammarly</span>
+    <span><em>✦</em>ChatGPT Plus</span><span><em>✦</em>Gemini AI Pro</span><span><em>✦</em>Adobe Creative Cloud</span><span><em>✦</em>Perplexity Pro</span><span><em>✦</em>ElevenLabs</span><span><em>✦</em>Midjourney</span><span><em>✦</em>Canva Pro</span><span><em>✦</em>Microsoft 365</span><span><em>✦</em>Grammarly</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section id="categories">
+  <div class="section-label">تصفح حسب الفئة · Browse by Category</div>
+  <div class="section-title">كل اللي <span>تحتاجه</span></div>
+  <div class="section-subtitle">Everything You Need</div>
+  <div class="categories-grid">
+
+    <div class="cat-card active" onclick="filterCards('all',this)">
+      <div class="cat-logo-wrap" style="background:#101828; padding:10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/180px-ChatGPT_logo.svg.png" alt="All">
+      </div>
+      <div class="cat-name-en">All Products</div>
+      <div class="cat-name-ar">كل المنتجات</div>
+      <div class="cat-count">52 منتج</div>
+    </div>
+
+    <div class="cat-card" onclick="filterCards('ai',this)">
+      <div class="cat-logo-wrap" style="background:#0d1a2e; padding:10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/200px-Google_Gemini_logo.svg.png" alt="AI">
+      </div>
+      <div class="cat-name-en">AI Tools</div>
+      <div class="cat-name-ar">أدوات الذكاء الاصطناعي</div>
+      <div class="cat-count">12 منتج</div>
+    </div>
+
+    <div class="cat-card" onclick="filterCards('design',this)">
+      <div class="cat-logo-wrap" style="background:#1a0433; padding:10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Canva_Logo.svg/250px-Canva_Logo.svg.png" alt="Design">
+      </div>
+      <div class="cat-name-en">Design</div>
+      <div class="cat-name-ar">التصميم</div>
+      <div class="cat-count">8 منتجات</div>
+    </div>
+
+    <div class="cat-card" onclick="filterCards('editing',this)">
+      <div class="cat-logo-wrap" style="background:#180a2e; padding:10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Adobe_Creative_Cloud_rainbow_icon.svg/180px-Adobe_Creative_Cloud_rainbow_icon.svg.png" alt="Editing">
+      </div>
+      <div class="cat-name-en">Editing</div>
+      <div class="cat-name-ar">المونتاج والتحرير</div>
+      <div class="cat-count">10 منتجات</div>
+    </div>
+
+    <div class="cat-card" onclick="filterCards('education',this)">
+      <div class="cat-logo-wrap" style="background:#0c1a10; padding:8px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Notion_app_logo.png/240px-Notion_app_logo.png" alt="Education" style="border-radius:10px; background:#fff; padding:4px;">
+      </div>
+      <div class="cat-name-en">Education</div>
+      <div class="cat-name-ar">التعليم</div>
+      <div class="cat-count">6 منتجات</div>
+    </div>
+
+    <div class="cat-card" onclick="filterCards('productivity',this)">
+      <div class="cat-logo-wrap" style="background:#0a1020; padding:10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/240px-Microsoft_logo.svg.png" alt="Productivity">
+      </div>
+      <div class="cat-name-en">Productivity</div>
+      <div class="cat-name-ar">الإنتاجية</div>
+      <div class="cat-count">9 منتجات</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" style="padding-top:16px;">
+  <div class="products-header">
+    <div>
+      <div class="section-label">المنتجات المميزة · Featured</div>
+      <div class="section-title">أشهر <span>الاشتراكات</span></div>
+      <div class="section-subtitle">Top Subscriptions</div>
+    </div>
+    <a href="#" class="btn-outline" style="padding:10px 20px;font-size:.82rem;font-family:'Noto Kufi Arabic',sans-serif;">عرض الكل →</a>
+  </div>
+  <div class="filter-tabs">
+    <button class="tab active" onclick="filterCards('all',null,this)">
+      <span>الكل</span><span class="ar" style="font-size:.68rem;opacity:.7;">All</span>
+    </button>
+    <button class="tab" onclick="filterCards('ai',null,this)">
+      <span>🤖 ذكاء اصطناعي</span><span class="ar" style="font-size:.65rem;opacity:.7;">AI Tools</span>
+    </button>
+    <button class="tab" onclick="filterCards('design',null,this)">
+      <span>🎨 تصميم</span><span class="ar" style="font-size:.65rem;opacity:.7;">Design</span>
+    </button>
+    <button class="tab" onclick="filterCards('editing',null,this)">
+      <span>🎬 مونتاج</span><span class="ar" style="font-size:.65rem;opacity:.7;">Editing</span>
+    </button>
+    <button class="tab" onclick="filterCards('education',null,this)">
+      <span>📚 تعليم</span><span class="ar" style="font-size:.65rem;opacity:.7;">Education</span>
+    </button>
+    <button class="tab" onclick="filterCards('productivity',null,this)">
+      <span>⚡ إنتاجية</span><span class="ar" style="font-size:.65rem;opacity:.7;">Productivity</span>
+    </button>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+
+    <!-- ChatGPT Plus -->
+    <div class="product-card" data-cat="ai" id="buy">
+      <span class="product-badge badge-hot">🔥 الأكثر طلباً</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#131a2e,#0d1220);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/180px-ChatGPT_logo.svg.png" style="height:82px;" alt="ChatGPT">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">ChatGPT Plus</div>
+        <div class="product-name-ar">تشات جي بي تي بلس</div>
+        <div class="product-desc">GPT-4o · على ايميلك الشخصي · Codex + توليد صور · أسرع استجابة · أولوية دائمة</div>
+        <div class="product-price-row">
+          <div><span class="price-old">55,000 د.ع</span><div class="product-price">10,000 <small>د.ع / شهر</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gemini AI Pro -->
+    <div class="product-card" data-cat="ai">
+      <span class="product-badge badge-new">✨ جديد</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#0d1117,#141c2e);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/200px-Google_Gemini_logo.svg.png" style="height:72px;" alt="Gemini">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Gemini AI Pro</div>
+        <div class="product-name-ar">جيميني برو</div>
+        <div class="product-desc">Gemini Ultra · Nano Banana Pro · NotebookLM · بحث قوي ونتائج دقيقة جداً</div>
+        <div class="product-price-row">
+          <div><div class="product-price">19,000 <small>د.ع / شهر</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Perplexity Pro -->
+    <div class="product-card" data-cat="ai">
+      <span class="product-badge badge-hot">🔥 رائج</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#0a1a14,#0d2e22);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Perplexity_AI_Logo.svg/240px-Perplexity_AI_Logo.svg.png" style="height:68px;" alt="Perplexity" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-illustration-of-a-perplexity-ai-logo.png/320px-24701-illustration-of-a-perplexity-ai-logo.png'">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Perplexity Pro</div>
+        <div class="product-name-ar">بيربلكسيتي برو</div>
+        <div class="product-desc">بحث ذكاء اصطناعي متقدم · Claude 4.5, Sonar, GPT-4.5 · بدون إعلانات · مصادر موثوقة</div>
+        <div class="product-price-row">
+          <div><div class="product-price">29,000 <small>د.ع / سنة</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Midjourney -->
+    <div class="product-card" data-cat="ai design">
+      <span class="product-badge badge-hot">🔥 الأكثر طلباً</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#080808,#111111);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Midjourney_Emblem.png/240px-Midjourney_Emblem.png" style="height:78px;filter:brightness(1.1);" alt="Midjourney">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Midjourney</div>
+        <div class="product-name-ar">ميدجورني — توليد الصور بالذكاء الاصطناعي</div>
+        <div class="product-desc">200 صورة / شهر · دقة عالية جداً · استخدام تجاري مسموح · أسرع نموذج صور AI</div>
+        <div class="product-price-row">
+          <div><span class="price-old">45,000 د.ع</span><div class="product-price">18,000 <small>د.ع / شهر</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Adobe Creative Cloud -->
+    <div class="product-card" data-cat="editing design">
+      <span class="product-badge badge-sale">💰 عرض خاص</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#180a2e,#22103a);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Adobe_Creative_Cloud_rainbow_icon.svg/180px-Adobe_Creative_Cloud_rainbow_icon.svg.png" style="height:78px;" alt="Adobe">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Adobe Creative Cloud</div>
+        <div class="product-name-ar">أدوبي كريتيف كلاود — كامل</div>
+        <div class="product-desc">+21 برنامج: Photoshop, Premiere, After Effects · Firefly AI · 4000 كريدت · بدون قيود</div>
+        <div class="product-price-row">
+          <div><span class="price-old">79,000 د.ع</span><div class="product-price">25,000 <small>د.ع / سنة</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canva Pro -->
+    <div class="product-card" data-cat="design">
+      <span class="product-badge badge-sale">💰 عرض</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#0d0218,#1a0433);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Canva_Logo.svg/250px-Canva_Logo.svg.png" style="height:60px;" alt="Canva">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Canva Pro</div>
+        <div class="product-name-ar">كانفا برو — تصميم احترافي</div>
+        <div class="product-desc">تصميم غير محدود · Brand Kit · Magic AI · أكثر من 100 مليون قالب وصورة جاهزة</div>
+        <div class="product-price-row">
+          <div><span class="price-old">40,000 د.ع</span><div class="product-price">12,000 <small>د.ع / سنة</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ElevenLabs -->
+    <div class="product-card" data-cat="ai editing">
+      <span class="product-badge badge-new">✨ جديد</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#080808,#141414);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Eleven_Labs_logo.svg/240px-Eleven_Labs_logo.svg.png" style="height:58px;" alt="ElevenLabs" onerror="this.outerHTML='<div style=\'position:relative;z-index:1;color:#fff;font-weight:700;font-size:1.2rem;letter-spacing:2px;\'>ElevenLabs</div>'">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">ElevenLabs Creator</div>
+        <div class="product-name-ar">إيليفن لابس — استنساخ الصوت</div>
+        <div class="product-desc">110,000 كريدت / شهر · استنساخ صوتك · دعم عربي وإنجليزي · أصوات لأكثر من 29 لغة</div>
+        <div class="product-price-row">
+          <div><div class="product-price">35,000 <small>د.ع / شهر</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notion AI -->
+    <div class="product-card" data-cat="productivity education">
+      <span class="product-badge badge-new">✨ جديد</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#0c1a10,#0a2214);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Notion_app_logo.png/240px-Notion_app_logo.png" style="height:70px;border-radius:14px;background:#fff;padding:8px;" alt="Notion">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Notion AI Plus</div>
+        <div class="product-name-ar">نوشن بلس — منظومة عمل ذكية</div>
+        <div class="product-desc">كتابة AI غير محدودة · مساحة عمل الفريق · أكثر من 10 تكاملات · يدعم العربية</div>
+        <div class="product-price-row">
+          <div><div class="product-price">12,000 <small>د.ع / شهر</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Microsoft 365 -->
+    <div class="product-card" data-cat="productivity education">
+      <span class="product-badge badge-sale">💰 عرض</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#0a1020,#0e1a34);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/240px-Microsoft_logo.svg.png" style="height:60px;" alt="Microsoft 365">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Microsoft 365</div>
+        <div class="product-name-ar">مايكروسوفت 365 — كامل</div>
+        <div class="product-desc">Word, Excel, PowerPoint, Teams · 1TB OneDrive · Copilot AI مدمج · 5 أجهزة</div>
+        <div class="product-price-row">
+          <div><span class="price-old">30,000 د.ع</span><div class="product-price">14,000 <small>د.ع / سنة</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grammarly -->
+    <div class="product-card" data-cat="productivity education">
+      <span class="product-badge badge-hot">🔥 رائج</span>
+      <div class="product-img" style="background:linear-gradient(135deg,#0d0a1e,#181030);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Grammarly_logo.svg/240px-Grammarly_logo.svg.png" style="height:54px;" alt="Grammarly">
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">Grammarly Premium</div>
+        <div class="product-name-ar">جراملي بريميوم — مساعد الكتابة</div>
+        <div class="product-desc">تصحيح قواعد وأسلوب · كشف الانتحال · إضافة متصفح · مناسب للطلاب والمحترفين</div>
+        <div class="product-price-row">
+          <div><div class="product-price">8,000 <small>د.ع / شهر</small></div></div>
+          <button class="btn-buy" onclick="orderNow(this)">اطلب الآن<span class="en">Order</span></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-label">العملية بسيطة · Simple Process</div>
+  <div class="section-title">كيف <span>يعمل؟</span></div>
+  <div class="section-subtitle">How It Works</div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">📋</div>
+      <div class="step-title-ar">اختر اشتراكك</div>
+      <div class="step-title-en">Choose Your Plan</div>
+      <div class="step-desc-ar">تصفح الكتالوج واختر البرنامج اللي يناسبك وميزانيتك.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">💬</div>
+      <div class="step-title-ar">تواصل وياي</div>
+      <div class="step-title-en">Contact Us</div>
+      <div class="step-desc-ar">راسلنا على واتساب أو تيليغرام أو إنستغرام — نرد بسرعة فائقة.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">💳</div>
+      <div class="step-title-ar">ادفع بسهولة</div>
+      <div class="step-title-en">Pay Easily</div>
+      <div class="step-desc-ar">زين كاش، آسيا حوالة، أو حوالة بنكية — اللي يريحك.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">⚡</div>
+      <div class="step-title-ar">فعّل خلال دقائق</div>
+      <div class="step-title-en">Get Activated</div>
+      <div class="step-desc-ar">نفعّل اشتراكك فوريًا ونوجهك للإعداد خطوة بخطوة.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CHANNELS -->
+<section id="channels">
+  <div class="section-label">تواصل معنا · Reach Us</div>
+  <div class="section-title">قنوات <span>التواصل</span></div>
+  <div class="section-subtitle">Contact Channels</div>
+  <div class="channels">
+    <div class="channel-card" style="border-color:rgba(37,211,102,0.35);">
+      <div class="channel-icon" style="background:rgba(37,211,102,0.12);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/120px-WhatsApp.svg.png" alt="WhatsApp">
+      </div>
+      <div class="ch-title-ar">واتساب</div>
+      <div class="ch-title-en">WhatsApp</div>
+      <div class="ch-desc">القناة الرئيسية للطلبات والدعم — نرد بسرعة فائقة وعلى مدار اليوم.</div>
+      <a href="#" class="channel-link">راسلنا الآن ←</a>
+    </div>
+    <div class="channel-card" style="border-color:rgba(58,141,255,0.35);">
+      <div class="channel-icon" style="background:rgba(58,141,255,0.12);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/120px-Telegram_logo.svg.png" alt="Telegram">
+      </div>
+      <div class="ch-title-ar">بوت تيليغرام</div>
+      <div class="ch-title-en">Telegram Bot</div>
+      <div class="ch-desc">اطلب 24/7 عبر البوت الآلي — تصفح الكتالوج وتحقق من حالة الطلب فورًا.</div>
+      <a href="#" class="channel-link">افتح تيليغرام ←</a>
+    </div>
+    <div class="channel-card" style="border-color:rgba(230,95,154,0.35);">
+      <div class="channel-icon" style="background:rgba(230,95,154,0.12);">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/120px-Instagram_icon.png" alt="Instagram">
+      </div>
+      <div class="ch-title-ar">إنستغرام</div>
+      <div class="ch-title-en">Instagram</div>
+      <div class="ch-desc">تابع @alpha_store.iq لآخر العروض — عروض حصرية للمتابعين كل أسبوع.</div>
+      <a href="https://instagram.com/alpha_store.iq" class="channel-link">@alpha_store.iq ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section style="padding-top:0;">
+  <div class="section-label">آراء زبائننا · Reviews</div>
+  <div class="section-title">شو قالوا <span>عنا</span></div>
+  <div class="section-subtitle">What Our Customers Say</div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-text">اشتريت ChatGPT Plus وتم التفعيل خلال 5 دقائق بالظبط. خدمة ممتازة وسعر لا يصدق — ما راح أروح لغيرهم أبداً.</div>
+      <div class="review-author"><div class="avatar">أح</div><div><div class="author-name">أحمد م.</div><div class="author-sub">بغداد · ChatGPT Plus</div></div></div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-text">Adobe Creative Cloud بسعر خرافي. كل التطبيقات شتغلت من أول يوم وما فيه أي مشكلة. أنصح الكل يشتري من متجر الفا.</div>
+      <div class="review-author"><div class="avatar">سر</div><div><div class="author-name">سارة ك.</div><div class="author-sub">البصرة · Adobe CC</div></div></div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-text en">Gemini AI Pro changed my content workflow completely. Alpha Store had the best price I found anywhere — super fast activation!</div>
+      <div class="review-author"><div class="avatar">MH</div><div><div class="author-name">Mohammed H.</div><div class="author-sub">Erbil · Gemini Pro</div></div></div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-text">كانفا برو بسعر قليل جداً وخدمة سريعة. كنت أدور مكان موثوق ولكيتهم على إنستغرام. نعم الاختيار!</div>
+      <div class="review-author"><div class="avatar">زي</div><div><div class="author-name">زيد ع.</div><div class="author-sub">الموصل · Canva Pro</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-banner">
+  <div class="cta-glow"></div>
+  <div class="cta-text">
+    <div class="cta-title-ar">جاهز تطوّر <span>أدواتك؟</span></div>
+    <div class="cta-title-en">Ready to Upgrade Your Toolkit?</div>
+    <div class="cta-sub">انضم لأكثر من 1,000 زبون عراقي يحصلون على أفضل الاشتراكات بأرخص الأسعار — تفعيل فوري وضمان مستمر.</div>
+  </div>
+  <div class="cta-actions">
+    <a href="#" class="btn-primary">📱 اطلب على واتساب</a>
+    <a href="#" class="btn-outline">✈️ بوت تيليغرام</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-hex"><span>A</span></div>
+        <div><span class="logo-en">ALPHA STORE</span><span class="logo-ar">متجر الفا</span></div>
+      </a>
+      <p>المصدر الأول في العراق للاشتراكات الرقمية. تفعيل سريع، أسعار صادقة، دعم حقيقي.</p>
+      <p style="margin-top:8px;font-size:.73rem;color:var(--gold-dim);">alpha-store.site · alpha-store.iq</p>
+    </div>
+    <div class="footer-col">
+      <h4>المنتجات<small>Products</small></h4>
+      <a href="#">أدوات الذكاء الاصطناعي</a>
+      <a href="#">برامج التصميم</a>
+      <a href="#">المونتاج والتحرير</a>
+      <a href="#">التعليم</a>
+      <a href="#">الإنتاجية</a>
+    </div>
+    <div class="footer-col">
+      <h4>الشركة<small>Company</small></h4>
+      <a href="#">من نحن</a>
+      <a href="#">كيف يعمل</a>
+      <a href="#">سياسة الاسترداد</a>
+      <a href="#">الأسئلة الشائعة</a>
+    </div>
+    <div class="footer-col">
+      <h4>تواصل معنا<small>Contact</small></h4>
+      <a href="#">واتساب</a>
+      <a href="#">تيليغرام</a>
+      <a href="#">إنستغرام</a>
+      <a href="#">فيسبوك</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 متجر الفا | Alpha Store — جميع الحقوق محفوظة</p>
+    <div class="social-links">
+      <a href="#" title="Instagram"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/120px-Instagram_icon.png" alt="IG"></a>
+      <a href="#" title="Telegram"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/120px-Telegram_logo.svg.png" alt="TG"></a>
+      <a href="#" title="WhatsApp"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/120px-WhatsApp.svg.png" alt="WA"></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function filterCards(cat, catCard, tabBtn) {
+    // Update category cards
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+    if (catCard) catCard.classList.add('active');
+    else {
+      document.querySelectorAll('.cat-card').forEach(c => {
+        if (c.dataset && c.getAttribute('onclick') && c.getAttribute('onclick').includes("'" + cat + "'")) {
+          c.classList.add('active');
+        }
+      });
+    }
+
+    // Update tabs
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    if (tabBtn) tabBtn.classList.add('active');
+    else {
+      document.querySelectorAll('.tab').forEach(t => {
+        const oc = t.getAttribute('onclick') || '';
+        if (oc.includes("'" + cat + "'")) t.classList.add('active');
+      });
+    }
+
+    // Filter product cards
+    const cards = document.querySelectorAll('.product-card');
+    let shown = 0;
+    cards.forEach(card => {
+      if (cat === 'all') {
+        card.classList.remove('hidden');
+        shown++;
+      } else {
+        const cats = (card.getAttribute('data-cat') || '').split(' ');
+        if (cats.includes(cat)) {
+          card.classList.remove('hidden');
+          shown++;
+        } else {
+          card.classList.add('hidden');
+        }
+      }
+    });
+
+    // Scroll to products
+    setTimeout(() => {
+      document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
+
+  function orderNow(btn) {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ تم الطلب!<span class="en">Done!</span>';
+    btn.style.background = '#1DBDA0';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 1800);
+  }
+</script>
+</body>
+</html>
